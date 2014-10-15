@@ -7,8 +7,9 @@
 		return templateEditorModule
 			.directive("enableDragDropSelect",
 			[
+				"$timeout",
 				"Cerberus.Tool.TemplateEditor.Helper.TemplateEditor",
-				function (TemplateEditorHelper)
+				function ($timeout, TemplateEditorHelper)
 				{
 					return {
 						restrict: "A",
@@ -29,7 +30,7 @@
 							});
 
 							//TODO: Fix
-							setTimeout(function ()
+							$timeout(function ()
 							{
 								TemplateEditorHelper.EnableDraggableResizableSelectable(scope, templateElement);
 								$("body").addClass("animatable");
@@ -38,7 +39,7 @@
 							scope.$on("ReloadTemplate", function ()
 							{
 								//TODO: Fix
-								setTimeout(function ()
+								$timeout(function ()
 								{
 									TemplateEditorHelper.EnableDraggableResizableSelectable(scope, templateElement);
 								}, 0);
