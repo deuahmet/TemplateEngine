@@ -32,18 +32,24 @@
 							//TODO: Fix
 							$timeout(function ()
 							{
-								TemplateEditorHelper.EnableDraggableResizableSelectable(scope, templateElement);
-								$("body").addClass("animatable");
-							}, 1000);
+								$("body")
+									.addClass("animatable")
+									.click(function (event)
+									{
+										var target = $(event.target);
 
-							scope.$on("ReloadTemplate", function ()
-							{
-								//TODO: Fix
-								$timeout(function ()
-								{
-									TemplateEditorHelper.EnableDraggableResizableSelectable(scope, templateElement);
-								}, 0);
-							});
+										//Do not deselect template controls if the user is switching between resolutions
+										if (target.hasClass("resolution"))
+										{
+											return;
+										}
+
+										$(".template-control.selected").removeClass("selected");
+
+										scope.$emit("TemplateControlSelected", null);
+										scope.$digest();
+									});
+							}, 1000);
 
 							TemplateEditorHelper.EnableDrop(scope, templateElement);
 						}

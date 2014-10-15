@@ -8,8 +8,7 @@
 			.module("Cerberus.Tool.TemplateEditor.Helper.TemplateEditor", [])
 			.service("Cerberus.Tool.TemplateEditor.Helper.TemplateEditor",
 			[
-				"$timeout",
-				function ($timeout)
+				function ()
 				{
 					//properties that are not on this list will be stripped away
 					var validProperties =
@@ -229,12 +228,12 @@
 						scope.$apply();
 					};
 
-					this.EnableDraggable = function (scope, templateElement, templateControlElements)
+					this.EnableDraggable = function (scope, templateControlElement)
 					{
 						var self = this;
 						var table = {};
 
-						templateControlElements
+						templateControlElement
 							.draggable(
 							{
 								snap: true,
@@ -342,10 +341,10 @@
 							});
 					};
 
-					this.EnableResizable = function (scope, templateElement, templateControlElements)
+					this.EnableResizable = function (scope, templateControlElement)
 					{
 						var self = this;
-						templateControlElements
+						templateControlElement
 							.resizable(
 							{
 								start: function ()
@@ -381,12 +380,12 @@
 							});
 					};
 
-					this.EnableSelectable = function (scope, templateElement, templateControlElements)
+					this.EnableSelectable = function (scope, templateControlElement)
 					{
 						var self = this;
-						templateControlElements = templateControlElements || templateElement.children(".template-control");
+						var templateElement = templateControlElement.parent();
 
-						templateControlElements
+						templateControlElement
 							.unbind("click")
 							.click(function (event)
 							{
@@ -420,22 +419,6 @@
 
 								event.stopPropagation();
 							});
-
-						$("body").click(function (event)
-						{
-							var target = $(event.target);
-
-							//Do not deselect template controls if the user is switching between resolutions
-							if (target.hasClass("resolution"))
-							{
-								return;
-							}
-
-							$(".template-control.selected").removeClass("selected");
-
-							scope.$emit("TemplateControlSelected", null);
-							scope.$digest();
-						});
 					};
 
 					this.EnableDraggableResizableSelectable = function (scope, templateElement)
@@ -471,8 +454,6 @@
 										});
 
 									scope.$digest();
-
-									$timeout(function () { self.EnableDraggableResizableSelectable(scope, templateElement); }, 50);
 								}
 							});
 					};

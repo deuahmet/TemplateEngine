@@ -75,7 +75,7 @@
 
 					$scope.Exit = function ()
 					{
-						window.location.href = "../";
+						window.location.href = "/";
 					};
 
 					$scope.SaveExit = function ()
