@@ -42,16 +42,14 @@
 						var snapShot = history[index];
 						historyIndex = index;
 
-						DataBagService.GetData("Template")
-							.then(function (template)
+						var template = DataBagService.GetData("Template");
+
+						TemplateEditorHelper.SetTemplateControlVisualProperties(
+							template,
+							snapShot.Resolution,
 							{
-								TemplateEditorHelper.SetTemplateControlVisualProperties(
-									template,
-									snapShot.Resolution,
-									{
-										Id: snapShot.Id,
-										VisualPropertes: snapShot[propertyName]
-									});
+								Id: snapShot.Id,
+								VisualPropertes: snapShot[propertyName]
 							});
 					}
 

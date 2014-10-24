@@ -13,11 +13,7 @@
 				function ($scope, Localization, DataBagService)
 				{
 					$scope.Localization = Localization;
-					DataBagService.GetData("Template")
-						.then(function(template)
-						{
-							$scope.Template = template;
-						});
+					$scope.Template = DataBagService.GetData("Template");
 
 					$scope.ControlData = JSON.tryParse($scope.SelectedTemplateControl.Content, new Cerberus.Tool.TemplateEngine.Model.ControlPlugin.Navigation.TableOfContents());
 

@@ -10,7 +10,6 @@
 			[
 				function ()
 				{
-					var self = this;
 					//properties that are not on this list will be stripped away
 					var validProperties =
 					[
@@ -422,11 +421,21 @@
 							});
 					};
 
-					this.EnableDrop = function (scope, element)
+					this.EnableDraggableResizableSelectable = function (scope, templateElement)
+					{
+						var templateControlElements = templateElement.children(".template-control");
+
+						this.EnableDraggable(scope, templateElement, templateControlElements);
+						this.EnableResizable(scope, templateElement, templateControlElements);
+						this.EnableSelectable(scope, templateElement, templateControlElements);
+
+					};
+
+					this.EnableDrop = function (scope, templateElement)
 					{
 						var self = this;
 
-						element
+						templateElement
 							.droppable(
 							{
 								accept: ".control-plugin",
@@ -526,16 +535,14 @@
 
 					this.OnTemplateControlUpdate = function (scope, templateControl)
 					{
-						scope.DataBagService.GetData("Template")
-							.then(function (template)
-							{
-								//Find resolution using current slider value: $scope.SliderValue
-								var resolution = self.FindResolution(template, scope.SliderValue);
+						var template = scope.currentScope.DataBagService.GetData("Template");
 
-								//Find template control using templateControl.Id
-								//and update the values in the mediaquery for this template control
-								self.SetTemplateControlVisualProperties(template, resolution, templateControl);
-							});
+						//Find resolution using current slider value: $scope.SliderValue
+						var resolution = this.FindResolution(template, scope.currentScope.SliderValue);
+
+						//Find template control using templateControl.Id
+						//and update the values in the mediaquery for this template control
+						this.SetTemplateControlVisualProperties(template, resolution, templateControl);
 					};
 
 					this.RemoveTemplateControlFromResolutions = function (template, templateControl)

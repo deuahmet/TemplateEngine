@@ -7,8 +7,7 @@ define(
 		"../Model/TemplateControl.js",
 		"../Model/Resolution.js",
 
-		"./TemplateLocalStorageProvider.js",
-		"./TemplateRestProvider.js"
+		"./TemplateLocalStorageProvider.js"
 	],
 	function (angular)
 	{
@@ -20,7 +19,6 @@ define(
 				{
 					var templateProvider = null,
 						templateProviderParameters = null;
-
 					this.SetProvider = function (provider, parameters)
 					{
 						templateProvider = provider;

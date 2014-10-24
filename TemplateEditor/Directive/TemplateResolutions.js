@@ -34,6 +34,20 @@
 								templateElement.css("width", value + "px");
 							});
 
+							scope.CurrentResolution = scope.Template.Resolutions[scope.Template.Resolutions.length - 1];
+
+							//Waits until the template has been loaded and the resolutions are available
+							var timerHandle = setInterval(function ()
+							{
+								if (scope.Template.Resolutions.length > 0)
+								{
+									scope.SetDocumentWidth(scope.Template.Resolutions[scope.Template.Resolutions.length - 1].ResolutionValue);
+
+									scope.$digest();
+									clearInterval(timerHandle);
+								}
+							}, 100);
+
 							resolutionSlider.slider(
 							{
 								step: 1,
@@ -83,14 +97,7 @@
 								$scope.MaxResolutionValue = MaxResolutionValue;
 								$scope.SliderValue = MaxResolutionValue;
 								$scope.DataBagService = DataBagService;
-
-								DataBagService.GetData("Template")
-									.then(function(template)
-									{
-										$scope.Template = template;
-										$scope.CurrentResolution = template.Resolutions[template.Resolutions.length - 1];
-										$scope.SetDocumentWidth(template.Resolutions[template.Resolutions.length - 1].ResolutionValue);
-									});
+								$scope.Template = DataBagService.GetData("Template");
 
 								$scope.ResolutionPresets =
 								[
@@ -109,12 +116,12 @@
 									$scope.Template = template;
 								});
 
-								$scope.$on("TemplateControlUpdated", function (scope, templateControl) { TemplateEditorHelper.OnTemplateControlUpdate(scope.currentScope, templateControl); });
-								$scope.$on("TemplateControlAdded", function (scope, templateControl) { TemplateEditorHelper.OnTemplateControlUpdate(scope.currentScope, templateControl); });
+								$scope.$on("TemplateControlUpdated", function (scope, templateControl) { TemplateEditorHelper.OnTemplateControlUpdate(scope, templateControl); });
+								$scope.$on("TemplateControlAdded", function (scope, templateControl) { TemplateEditorHelper.OnTemplateControlUpdate(scope, templateControl); });
 
 								$scope.AddResolution = function (resolutionPreset)
 								{
-									var template = $scope.Template,
+									var template = DataBagService.GetData("Template"),
 										resolution = new Cerberus.Tool.TemplateEngine.Model.Resolution(),
 										resolutionValue = Math.min(resolutionPreset != null ? resolutionPreset.Value : $scope.SliderValue, MaxResolutionValue),
 										currentResolution = TemplateEditorHelper.FindResolution(template, resolutionValue);

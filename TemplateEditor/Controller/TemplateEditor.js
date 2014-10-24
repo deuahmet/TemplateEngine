@@ -6,23 +6,21 @@
 		"jquery-ui-resizable-fix",
 		"jquery-mCustomScrollbar"
 	],
-	function (templateEditorModule)
+	function(templateEditorModule)
 	{
 		templateEditorModule
 			.controller("Cerberus.Tool.TemplateEditor.Controller.TemplateEditor",
 			[
 				"$scope",
-				"$location",
 				"$stateParams",
 				"Cerberus.Tool.TemplateEditor.Localization",
 				"Cerberus.Tool.TemplateEngine.Service.Template",
 				"Cerberus.Tool.TemplateEditor.Service.History",
 				"Cerberus.Tool.TemplateEngine.Service.DataBag",
-				function ($scope, $location, $stateParams, Localization, TemplateService, HistoryService, DataBagService)
+				function ($scope, $stateParams, Localization, TemplateService, HistoryService, DataBagService)
 				{
 					var controlIdCounter = 0,
-						templateId = ~~$stateParams.TemplateId,
-						location = $location;
+						templateId = $stateParams.TemplateId || 0;
 
 					function GenerateControlId()
 					{
@@ -50,41 +48,39 @@
 						templateControl.Id = GenerateControlId();
 						templateControl.CreationGUID = templateControl.Id;
 
-						DataBagService.GetData("Template")
-							.then(function (template)
-							{
-								template.TemplateControls.push(templateControl);
-								$scope.$emit("TemplateControlAdded", templateControl);
-							});
+						var template = DataBagService.GetData("Template");
+						template.TemplateControls.push(templateControl);
+						$scope.$emit("TemplateControlAdded", templateControl);
 					};
 
-					$scope.Save = function ()
+					$scope.Save = function (successCallback)
 					{
-						var templatePromise = TemplateService.SaveTemplate(DataBagService.GetData("Template"));
+						TemplateService.SaveTemplate(DataBagService.GetData("Template"),
+							function (result, response)
+							{
+								$scope.$broadcast("ReloadTemplate", response.d);
 
-						DataBagService.AddData("Template", templatePromise);
-
-						templatePromise.then(function (template)
-						{
-							$scope.$broadcast("ReloadTemplate", template);
-						});
-
-						return templatePromise;
+								if (successCallback)
+								{
+									successCallback();
+								}
+							},
+							//Save failed
+							function (result, response)
+							{
+								//	$scope.SaveStatus = "SaveError";
+								alert(response.Message);
+							});
 					};
 
 					$scope.Exit = function ()
 					{
-						var exitUrl = location.search()["ExitUrl"] || "/";
-						window.location.href = exitUrl;
+						window.location.href = "../";
 					};
 
 					$scope.SaveExit = function ()
 					{
-						this.Save()
-							.then(function ()
-							{
-								$scope.Exit()
-							});
+						this.Save(function () { $scope.Exit() });
 					};
 				}
 			]);
