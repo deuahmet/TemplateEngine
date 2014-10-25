@@ -1,1 +1,31 @@
-define(["../App.js"],function(a){return a.directive("csToggleHiddenElements",function(){return{restrict:"A",scope:!1,link:function(a,b){b.find(".template");a.$on("ShowHiddenElements",function(a,c){c?b.addClass("show-hidden-elements"):b.removeClass("show-hidden-elements")})}}})});
+﻿define(
+	[
+		"../App.js"
+	],
+	function (app)
+	{
+		return app
+			.directive("csToggleHiddenElements", function ()
+			{
+				return {
+					restrict: "A",
+					scope: false,
+					link: function (scope, element, attributes)
+					{
+						var templateElement = element.find(".template");
+
+						scope.$on("ShowHiddenElements", function (scope, enable)
+						{
+							if (enable)
+							{
+								element.addClass("show-hidden-elements");
+							}
+							else
+							{
+								element.removeClass("show-hidden-elements");
+							}
+						});
+					}
+				}
+			});
+	});

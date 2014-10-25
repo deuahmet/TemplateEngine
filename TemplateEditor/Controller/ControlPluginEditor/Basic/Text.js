@@ -1,1 +1,11 @@
-define(["../../../App.js"],function(a){var b="Cerberus.Tool.TemplateEditor.Controller.ControlPluginEditor.Basic.Text";return a.controller(b,function(){}),b});
+﻿define(
+	[
+		"../../../App.js"
+	],
+	function (templateEditorModule)
+	{
+		var controllerId = "Cerberus.Tool.TemplateEditor.Controller.ControlPluginEditor.Basic.Text";
+		templateEditorModule.controller(controllerId, function () { });
+
+		return controllerId;
+	});

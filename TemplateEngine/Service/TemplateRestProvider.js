@@ -1,1 +1,91 @@
-define(["angular","ResourceBuilder"],function(a,b){namespace("Cerberus.Tool.TemplateEngine.Service").TemplateRestProvider=a.extend(function(a,c){function d(a){var b=c.defer();return a.then(function(a){b.resolve(a.data)}).catch(function(){b.reject()}),b.promise}var e="";this.Configure=function(a){e=a},this.GetTemplate=function(c){return d(a.get(b.BuildResourceUrl(e,"template",~~c)))},this.RemoveTemplate=function(c){return d(a.delete(b.BuildResourceUrl(e,"template",~~c)))},this.SaveTemplate=function(c){return d(a.put(b.BuildResourceUrl(e,"template"),c))},this.CloneTemplate=function(c){return d(a.post(b.BuildResourceUrl(e,"template",~~c,"clone")))},this.GetTemplates=function(){return d(a.get(b.BuildResourceUrl(e,"templates")))},this.GetTemplateInfo=function(c){return d(a.get(b.BuildResourceUrl(e,"templateinfo",~~c)))},this.SaveTemplateInfo=function(c){return d(a.put(b.BuildResourceUrl(e,"templateinfo"),c))},this.GetDocument=function(c,f,g){return d(a.get(b.BuildResourceUrl(e,"templatecontent",~~c,~~f,~~g)))},this.SaveDocument=function(c,f,g){return d(a.put(b.BuildResourceUrl(e,"templatecontent",~~f,g),c))},this.GetControlPlugins=function(){return d(a.get(b.BuildResourceUrl(e,"controlplugins")))}},{$inject:["$http","$q"]})});
+﻿define(
+	[
+		"angular",
+		"ResourceBuilder"
+	],
+	function (angular, ResourceBuilder)
+	{
+		namespace("Cerberus.Tool.TemplateEngine.Service").TemplateRestProvider = angular.extend(function ($http, $q)
+		{
+			var serviceUrl = "";
+
+			function CleanPromise(promise)
+			{
+				var defer = $q.defer();
+
+				promise
+					.then(function (response)
+					{
+						defer.resolve(response.data);
+					})
+					.catch(function ()
+					{
+						defer.reject();
+					});
+
+				return defer.promise;
+			};
+
+			this.Configure = function (url)
+			{
+				serviceUrl = url;
+			};
+
+			//Template
+			this.GetTemplate = function (templateId)
+			{
+				return CleanPromise($http.get(ResourceBuilder.BuildResourceUrl(serviceUrl, "template", ~~templateId)));
+			};
+
+			this.RemoveTemplate = function (templateId)
+			{
+				return CleanPromise($http.delete(ResourceBuilder.BuildResourceUrl(serviceUrl, "template", ~~templateId)));
+			};
+
+			this.SaveTemplate = function (template)
+			{
+				return CleanPromise($http.put(ResourceBuilder.BuildResourceUrl(serviceUrl, "template"), template));
+			};
+
+			this.CloneTemplate = function (templateId)
+			{
+				return CleanPromise($http.post(ResourceBuilder.BuildResourceUrl(serviceUrl, "template", ~~templateId, "clone")));
+			};
+
+			//Templates
+			this.GetTemplates = function ()
+			{
+				return CleanPromise($http.get(ResourceBuilder.BuildResourceUrl(serviceUrl, "templates")));
+			};
+
+			//TemplateInfo
+			this.GetTemplateInfo = function (templateId)
+			{
+				return CleanPromise($http.get(ResourceBuilder.BuildResourceUrl(serviceUrl, "templateinfo", ~~templateId)));
+			};
+
+			this.SaveTemplateInfo = function (template)
+			{
+				return CleanPromise($http.put(ResourceBuilder.BuildResourceUrl(serviceUrl, "templateinfo"), template));
+			};
+
+			//TemplateContent
+			this.GetDocument = function (templateId, documentId, documentTypeId)
+			{
+				return CleanPromise($http.get(ResourceBuilder.BuildResourceUrl(serviceUrl, "templatecontent", ~~templateId, ~~documentId, ~~documentTypeId)));
+			};
+
+			this.SaveDocument = function (template, documentId, documentTypeId)
+			{
+				return CleanPromise($http.put(ResourceBuilder.BuildResourceUrl(serviceUrl, "templatecontent", ~~documentId, documentTypeId), template));
+			};
+
+			this.GetControlPlugins = function ()
+			{
+				return CleanPromise($http.get(ResourceBuilder.BuildResourceUrl(serviceUrl, "controlplugins")));
+			};
+		},
+		{
+			$inject: ["$http", "$q"]
+		});
+	});

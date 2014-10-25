@@ -1,1 +1,23 @@
-define(["../App.js"],function(a){return a.directive("csDroppable",["Cerberus.Tool.TemplateEditor.Helper.TemplateEditor",function(a){return{restrict:"A",scope:!1,link:function(b,c){a.EnableDrop(b,c.find(".template"))}}}])});
+﻿define(
+	[
+		"../App.js"
+	],
+	function (app)
+	{
+		return app
+			.directive("csDroppable",
+			[
+				"Cerberus.Tool.TemplateEditor.Helper.TemplateEditor",
+				function (TemplateEditorHelper)
+				{
+					return {
+						restrict: "A",
+						scope: false,
+						link: function (scope, element, attributes)
+						{
+							TemplateEditorHelper.EnableDrop(scope, element.find(".template"));
+						}
+					};
+				}
+			]);
+	});

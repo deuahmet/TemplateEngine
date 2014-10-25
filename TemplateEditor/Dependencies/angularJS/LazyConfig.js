@@ -1,1 +1,58 @@
-define(function(){return function(a){return["$controllerProvider","$compileProvider","$filterProvider","$provide",function(b,c,d,e){var f=angular.module(a);f.value=function(a,b){return e.value(a,b),f},f.constant=function(a,b){return e.constant(a,b),f},f.service=function(a,b){return e.service(a,b),f},f.factory=function(a,b){return e.factory(a,b),f},f.controller=function(a,c){return b.register(a,c),f},f.directive=function(a,b){return c.directive(a,b),f},f.provider=function(a,b){return e.provider(a,b),f}}]}});
+﻿define(function ()
+{
+	return function (appId)
+	{
+		return [
+			"$controllerProvider",
+			"$compileProvider",
+			"$filterProvider",
+			"$provide",
+			function ($controllerProvider, $compileProvider, $filterProvider, $provide)
+			{
+				var app = angular.module(appId);
+
+				app.value = function (id, args)
+				{
+					$provide.value(id, args);
+					return app;
+				};
+
+				app.constant = function (id, args)
+				{
+					$provide.constant(id, args);
+					return app;
+				};
+
+				app.service = function (id, args)
+				{
+					$provide.service(id, args);
+					return app;
+				};
+
+				app.factory = function (id, args)
+				{
+					$provide.factory(id, args);
+					return app;
+				};
+
+				app.controller = function (id, args)
+				{
+					$controllerProvider.register(id, args);
+					return app;
+				};
+
+				app.directive = function (id, args)
+				{
+					$compileProvider.directive(id, args);
+					return app;
+				};
+
+				app.provider = function (id, args)
+				{
+					$provide.provider(id, args);
+					return app;
+				};
+			}
+		];
+	};
+});

@@ -1,1 +1,86 @@
-define(["angular","TemplateEngine/Service/Template.js"],function(a){a.module("Demo",["Cerberus.Tool.TemplateEngine.Service.Template"]).config(["Cerberus.Tool.TemplateEngine.Service.TemplateProvider",function(a){a.SetProvider(Cerberus.Tool.TemplateEngine.Service.TemplateLocalStorageProvider)}]).service("TemplatePresetsService",function(b){var c=[];this.GetPresets=function(){return b.get("template-presets.json").then(function(b){a.extend(c,b.data.TemplatePresets)}),c}}).controller("DemoController",["$scope","TemplatePresetsService","Cerberus.Tool.TemplateEngine.Service.Template",function(b,c,d){b.TemplatePresets=c.GetPresets(),d.GetTemplates().then(function(a){b.Templates=a}),b.AddTemplate=function(c){var e;c?(e=a.extend({},c.Data),e.Name=c.Name):(e=new Cerberus.Tool.TemplateEngine.Model.Template,e.Name="Template",e.Resolutions.push(new Cerberus.Tool.TemplateEngine.Model.Resolution)),d.SaveTemplate(e).then(function(a){b.Templates.push(a)})},b.RemoveTemplate=function(a){d.RemoveTemplate(a.Id).then(function(){b.Templates.RemoveValue("Id",a.Id)})}}]),require(["domReady!"],function(b){a.bootstrap(b,["Demo"])})});
+﻿define(
+	[
+		"angular",
+		"TemplateEngine/Service/Template.js"
+	],
+	function (angular)
+	{
+		angular
+			.module("Demo", ["Cerberus.Tool.TemplateEngine.Service.Template"])
+			.config(
+			[
+				"Cerberus.Tool.TemplateEngine.Service.TemplateProvider",
+				function (TemplateProvider)
+				{
+					TemplateProvider.SetProvider(Cerberus.Tool.TemplateEngine.Service.TemplateLocalStorageProvider);
+				}
+			])
+			.service("TemplatePresetsService", function ($http)
+			{
+				var presets = [];
+
+				this.GetPresets = function ()
+				{
+					$http
+						.get("template-presets.json")
+						.then(function (response)
+						{
+							angular.extend(presets, response.data.TemplatePresets);
+						});
+
+					return presets;
+				};
+			})
+			.controller("DemoController",
+			[
+				"$scope",
+				"TemplatePresetsService",
+				"Cerberus.Tool.TemplateEngine.Service.Template",
+				function ($scope, TemplatePresetsService, TemplateService)
+				{
+					$scope.TemplatePresets = TemplatePresetsService.GetPresets();
+					TemplateService.GetTemplates()
+						.then(function (templates)
+						{
+							$scope.Templates = templates;
+						});
+
+					$scope.AddTemplate = function (templatePreset)
+					{
+						var template;
+
+						if (templatePreset)
+						{
+							template = angular.extend({}, templatePreset.Data);
+							template.Name = templatePreset.Name;
+						}
+						else
+						{
+							template = new Cerberus.Tool.TemplateEngine.Model.Template();
+							template.Name = "Template";
+							template.Resolutions.push(new Cerberus.Tool.TemplateEngine.Model.Resolution());
+						}
+
+						TemplateService.SaveTemplate(template)
+							.then(function (template)
+							{
+								$scope.Templates.push(template);
+							});
+					};
+
+					$scope.RemoveTemplate = function (template)
+					{
+						TemplateService.RemoveTemplate(template.Id)
+							.then(function()
+							{
+								$scope.Templates.RemoveValue("Id", template.Id);
+							});
+					};
+				}
+			]);
+
+		require(["domReady!"], function (document)
+		{
+			angular.bootstrap(document, ["Demo"]);
+		});
+	});
